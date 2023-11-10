@@ -1,11 +1,17 @@
 # embedded-queue
 ![Test](https://github.com/hajipy/embedded-queue/workflows/Test/badge.svg)
 
-embedded-queue is job/message queue for Node.js and Electron. It is not required other process for persistence data, like Redis, MySQL, and so on. It persistence data by using [nedb](https://github.com/louischatriot/nedb) embedded database.
+embedded-queue is job/message queue for any platform.
+It does not required any other repository for storing data, like Redis, MySQL, and so on. 
+
+It currently has the following repository implementations:
+* [nedb](https://github.com/louischatriot/nedb) embedded repository,
+* vanilla in-memory repository,
+* or you can implement your own repository
 
 ## Installation
 ```sh
-npm install --save embedded-queue 
+npm install embedded-queue 
 ```
 or 
 ```sh
@@ -14,11 +20,13 @@ yarn add embedded-queue
 
 ## Basic Usage
 ```js
-const EmbeddedQueue = require("embedded-queue");
+import { Queue, InMemoryJobRepository } from 'embedded-queue'
 
 (async () => {
-    // argument path through nedb
-    const queue = await EmbeddedQueue.Queue.createQueue({ inMemoryOnly: true });
+    const queue = await Queue.createQueue(
+        new InMemoryJobRepository()
+        // or new NedbJobRepository({ /* you can pass the nedb options here */ })
+    );
 
     // set up job processor for "adder" type, concurrency is 1
     queue.process(
@@ -58,7 +66,7 @@ const EmbeddedQueue = require("embedded-queue");
 - Shutdown Queue
 
 ### Create Queue
-You can create a new queue by calling `Queue.createQueue(dbOptions)`. `dbOptions` argument is pass to nedb database constructor. for more information see [nedb documents](https://github.com/louischatriot/nedb#creatingloading-a-database). `Queue.createQueue` returns a `Promise`, `await` it for initialize finish.
+You can create a new queue by calling `Queue.createQueue(repository)`. `Queue.createQueue` returns a `Promise`, `await` it for initialize finish.
 
 ### Set Job Processor
 Job processor is a function that process single job. It is called by `Worker` and pass `Job` argument, it must return `Promise<any>`. It runs any process(calculation, network access, etc...) and call `resolve(result)`. Required data can pass by `Job.data` object. Also you can call `Job.setProgress` for notify progress, `Job.addLog` for logging.
