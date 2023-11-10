@@ -32,15 +32,12 @@ class Job {
     get updatedAt() {
         return this._updatedAt;
     }
-    // noinspection JSUnusedGlobalSymbols
     get startedAt() {
         return this._startedAt;
     }
-    // noinspection JSUnusedGlobalSymbols
     get completedAt() {
         return this._completedAt;
     }
-    // noinspection JSUnusedGlobalSymbols
     get failedAt() {
         return this._failedAt;
     }

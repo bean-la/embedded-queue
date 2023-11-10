@@ -54,17 +54,14 @@ export class Job {
         return this._updatedAt;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     public get startedAt(): Date | undefined {
         return this._startedAt;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     public get completedAt(): Date | undefined {
         return this._completedAt;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     public get failedAt(): Date | undefined {
         return this._failedAt;
     }

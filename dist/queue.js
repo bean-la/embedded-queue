@@ -6,20 +6,19 @@ const await_semaphore_1 = require("await-semaphore");
 const uuid_1 = require("uuid");
 const event_1 = require("./event");
 const job_1 = require("./job");
-const jobRepository_1 = require("./jobRepository");
 const priority_1 = require("./priority");
 const state_1 = require("./state");
 const worker_1 = require("./worker");
 class Queue extends events_1.EventEmitter {
-    constructor(dbOptions) {
+    constructor(repository) {
         super();
-        this.repository = new jobRepository_1.JobRepository(dbOptions);
+        this.repository = repository;
         this._workers = [];
         this.waitingRequests = {};
         this.requestJobForProcessingMutex = new await_semaphore_1.Mutex();
     }
-    static async createQueue(dbOptions) {
-        const queue = new Queue(dbOptions);
+    static async createQueue(repository) {
+        const queue = new Queue(repository);
         await queue.repository.init();
         await queue.cleanupAfterUnexpectedlyTermination();
         return queue;
@@ -141,13 +140,13 @@ class Queue extends events_1.EventEmitter {
     }
     /** @package */
     async requestJobForProcessing(type, stillRequest) {
-        // すでにジョブの作成を待っているリクエストがあれば、行列の末尾に足す
+        // If you have already created a job, there is a request
         if (this.waitingRequests[type] !== undefined && this.waitingRequests[type].length > 0) {
             return new Promise((resolve, reject) => {
                 this.waitingRequests[type].push({ resolve, reject, stillRequest });
             });
         }
-        // 同じジョブを多重処理しないように排他制御
+        // Exclusive control to prevent the same job from being processed multiple times
         const releaseMutex = await this.requestJobForProcessingMutex.acquire();
         try {
             const neDbJob = await this.repository.findInactiveJobByType(type);

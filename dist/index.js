@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Event = exports.State = exports.priorityToString = exports.Priority = exports.Job = exports.Worker = exports.Queue = void 0;
+exports.InMemoryJobRepository = exports.NedbJobRepository = exports.Event = exports.State = exports.priorityToString = exports.Priority = exports.Job = exports.Worker = exports.Queue = void 0;
 var queue_1 = require("./queue");
 Object.defineProperty(exports, "Queue", { enumerable: true, get: function () { return queue_1.Queue; } });
 var worker_1 = require("./worker");
@@ -14,3 +14,7 @@ var state_1 = require("./state");
 Object.defineProperty(exports, "State", { enumerable: true, get: function () { return state_1.State; } });
 var event_1 = require("./event");
 Object.defineProperty(exports, "Event", { enumerable: true, get: function () { return event_1.Event; } });
+var nedb_repository_1 = require("./nedb-repository");
+Object.defineProperty(exports, "NedbJobRepository", { enumerable: true, get: function () { return nedb_repository_1.NedbJobRepository; } });
+var memory_repository_1 = require("./memory-repository");
+Object.defineProperty(exports, "InMemoryJobRepository", { enumerable: true, get: function () { return memory_repository_1.InMemoryJobRepository; } });

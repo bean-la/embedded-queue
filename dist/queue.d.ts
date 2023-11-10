@@ -2,10 +2,10 @@
 import { EventEmitter } from "events";
 import { Mutex } from "await-semaphore";
 import { Job } from "./job";
-import { DbOptions, JobRepository, NeDbJob } from "./jobRepository";
 import { Priority } from "./priority";
 import { State } from "./state";
 import { Worker } from "./worker";
+import { DBJob, IJobRepository } from "./types";
 export interface CreateJobData {
     type: string;
     priority?: Priority;
@@ -18,16 +18,16 @@ interface WaitingWorkerRequest {
     stillRequest: () => boolean;
 }
 export declare class Queue extends EventEmitter {
-    static createQueue(dbOptions?: DbOptions): Promise<Queue>;
+    static createQueue(repository: IJobRepository): Promise<Queue>;
     protected static sanitizePriority(priority: number): Priority;
-    protected readonly repository: JobRepository;
+    protected readonly repository: IJobRepository;
     protected _workers: Worker[];
     protected waitingRequests: {
         [type: string]: WaitingWorkerRequest[];
     };
     protected requestJobForProcessingMutex: Mutex;
     get workers(): Worker[];
-    protected constructor(dbOptions?: DbOptions);
+    protected constructor(repository: IJobRepository);
     createJob(data: CreateJobData): Promise<Job>;
     process(type: string, processor: Processor, concurrency: number): void;
     shutdown(timeoutMilliseconds: number, type?: string | undefined): Promise<void>;
@@ -46,6 +46,6 @@ export declare class Queue extends EventEmitter {
     /** @package */
     removeJob(job: Job): Promise<void>;
     protected cleanupAfterUnexpectedlyTermination(): Promise<void>;
-    protected convertNeDbJobToJob(neDbJob: NeDbJob): Job;
+    protected convertNeDbJobToJob(neDbJob: DBJob): Job;
 }
 export {};

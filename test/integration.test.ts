@@ -1,6 +1,6 @@
 import * as util from "util";
 
-import { Event, Job, Priority, Queue, State } from "../src";
+import { Event, Job, InMemoryJobRepository as NedbJobRepository, Priority, Queue, State } from "../src";
 
 const setTimeoutPromise = util.promisify(setTimeout);
 
@@ -19,7 +19,11 @@ test("Basic Usage", async () => {
         return typeof data.a === "number" && typeof data.b === "number";
     }
 
-    const queue = await Queue.createQueue({ inMemoryOnly: true });
+    const queue = await Queue.createQueue(
+        new NedbJobRepository({
+            inMemoryOnly: true,
+        })
+    );
 
     const processor = jest.fn().mockImplementation(
         async (job: Job) => {
@@ -62,7 +66,11 @@ test("Basic Usage", async () => {
 
 describe("Event Handlers", () => {
     test("Enqueue", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const enqueueHandler = jest.fn();
         queue.on(Event.Enqueue, enqueueHandler);
@@ -74,7 +82,11 @@ describe("Event Handlers", () => {
     });
 
     test("Start", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const startHandler = jest.fn();
         queue.on(Event.Start, startHandler);
@@ -90,7 +102,11 @@ describe("Event Handlers", () => {
     });
 
     test("Failure", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const failureHandler = jest.fn();
         queue.on(Event.Failure, failureHandler);
@@ -107,7 +123,11 @@ describe("Event Handlers", () => {
     });
 
     test("Complete", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const completeHandler = jest.fn();
         queue.on(Event.Complete, completeHandler);
@@ -124,7 +144,11 @@ describe("Event Handlers", () => {
     });
 
     test("Remove", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const removeHandler = jest.fn();
         queue.on(Event.Remove, removeHandler);
@@ -142,7 +166,11 @@ describe("Event Handlers", () => {
     });
 
     test("Progress", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const progressHandler = jest.fn();
         queue.on(Event.Progress, progressHandler);
@@ -170,7 +198,11 @@ describe("Event Handlers", () => {
     });
 
     test("Log", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const logHandler = jest.fn();
         queue.on(Event.Log, logHandler);
@@ -199,7 +231,11 @@ describe("Event Handlers", () => {
     });
 
     test("Priority", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const priorityHandler = jest.fn();
         queue.on(Event.Priority, priorityHandler);
@@ -216,7 +252,11 @@ describe("Event Handlers", () => {
 });
 
 test("Create Job", async () => {
-    const queue = await Queue.createQueue({ inMemoryOnly: true });
+    const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
     const type = "SomeType";
     const priority = Priority.NORMAL;
@@ -240,7 +280,11 @@ test("Create Job", async () => {
 });
 
 test("Set Job Processor", async () => {
-    const queue = await Queue.createQueue({ inMemoryOnly: true });
+    const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
     const someTypeWorkerCount = 3
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -257,7 +301,11 @@ test("Set Job Processor", async () => {
 });
 
 test("Shutdown Queue", async () => {
-    const queue = await Queue.createQueue({ inMemoryOnly: true });
+    const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
     const processingMilliseconds = 1000;
     queue.process("SomeType", () => setTimeoutPromise(processingMilliseconds), 1);
@@ -282,7 +330,11 @@ test("Shutdown Queue", async () => {
 
 describe("Queue API", () => {
     test("findJob", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const createdJobs = await Promise.all([
             queue.createJob({ type: "SomeType" }),
@@ -302,7 +354,11 @@ describe("Queue API", () => {
     });
 
     test("listJobs", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const createdJobs: Job[] = [];
         createdJobs.push(await queue.createJob({ type: "SomeType" }));
@@ -320,7 +376,11 @@ describe("Queue API", () => {
     });
 
     test("removeJobById", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const createdJobs = await Promise.all([
             queue.createJob({ type: "SomeType" }),
@@ -341,7 +401,11 @@ describe("Queue API", () => {
     });
 
     test("removeJobsByCallback", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const createdJobs: Job[] = [];
         createdJobs.push(await queue.createJob({ type: "SomeType" }));
@@ -363,7 +427,11 @@ describe("Job API", () => {
     test("setProgress", async () => {
         expect.assertions(3);
 
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         queue.process(
             "SomeType",
@@ -385,7 +453,11 @@ describe("Job API", () => {
     });
 
     test("remove", async () => {
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         const createdJob = await queue.createJob({ type: "SomeType" });
 
@@ -398,7 +470,11 @@ describe("Job API", () => {
 });
 
 test("Multiple Workers", async () => {
-    const queue = await Queue.createQueue({ inMemoryOnly: true });
+    const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
     let completedJobCount = 0;
     queue.on(Event.Complete, () => {

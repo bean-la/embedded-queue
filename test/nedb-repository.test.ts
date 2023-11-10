@@ -1,14 +1,14 @@
 import { mock } from "jest-mock-extended";
 import DataStore from "nedb";
 
-import { Job, Priority, Queue, State } from "../src";
-import { JobRepository, NeDbJob } from "../src/jobRepository";
+import { DBJob, Job, Priority, Queue, State } from "../src";
+import { NedbJobRepository as JobRepository } from "../src/nedb-repository";
 
-function dbFind(db: DataStore, _id: string): Promise<NeDbJob | null> {
+function dbFind(db: DataStore, _id: string): Promise<DBJob | null> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new Promise<NeDbJob | null>((resolve, reject) => {
+    return new Promise<DBJob | null>((resolve, reject) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        db.findOne({ _id }, (error, doc: NeDbJob | null) => {
+        db.findOne({ _id }, (error, doc: DBJob | null) => {
             if (error !== null) {
                 reject(error);
             }

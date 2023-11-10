@@ -1,7 +1,6 @@
 import { v4 as uuid } from "uuid";
 
-import { Job, Priority, Queue, State } from "../src";
-import { JobRepository, NeDbJob } from "../src/jobRepository";
+import { DBJob, IJobRepository, Job, NedbJobRepository, Priority, Queue, State } from "../src";
 
 // Note: Same as src/queue.ts
 interface WaitingWorkerRequest {
@@ -12,9 +11,11 @@ interface WaitingWorkerRequest {
 jest.mock("uuid");
 
 test("process & shutdown", async () => {
-    const queue = await Queue.createQueue({
-        inMemoryOnly: true,
-    });
+    const queue = await Queue.createQueue(
+        new NedbJobRepository({
+            inMemoryOnly: true,
+        })
+    );
 
     const type1 = "type1";
     const processor1 = jest.fn();
@@ -67,9 +68,11 @@ test("createJob", async () => {
     // eslint-disable-next-line
     (uuid as any).mockReturnValue(uuidValue);
 
-    const queue = await Queue.createQueue({
-        inMemoryOnly: true,
-    });
+    const queue = await Queue.createQueue(
+        new NedbJobRepository({
+            inMemoryOnly: true,
+        })
+    );
 
     const type = "type";
     const priority = Priority.HIGH;
@@ -106,11 +109,13 @@ test("createJob", async () => {
 
 describe("findJob", () => {
     test("found", async () => {
-        const queue = await Queue.createQueue({
-            inMemoryOnly: true,
-        });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
-        const nedbJob: NeDbJob = {
+        const nedbJob: DBJob = {
             _id: "1",
             type: "type",
             priority: Priority.NORMAL,
@@ -140,7 +145,7 @@ describe("findJob", () => {
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const repository = (queue as any).repository as JobRepository;
+        const repository = (queue as any).repository as IJobRepository;
         const mockedRepositoryFindJob = jest.fn().mockResolvedValue(nedbJob);
         repository.findJob = mockedRepositoryFindJob;
 
@@ -171,12 +176,14 @@ describe("findJob", () => {
     });
 
     test("not found", async () => {
-        const queue = await Queue.createQueue({
-            inMemoryOnly: true,
-        });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const repository = (queue as any).repository as JobRepository;
+        const repository = (queue as any).repository as IJobRepository;
         const mockedRepositoryFindJob = jest.fn().mockResolvedValue(null);
         repository.findJob = mockedRepositoryFindJob;
 
@@ -190,11 +197,13 @@ describe("findJob", () => {
 });
 
 test("listJobs", async () => {
-    const queue = await Queue.createQueue({
-        inMemoryOnly: true,
-    });
+    const queue = await Queue.createQueue(
+        new NedbJobRepository({
+            inMemoryOnly: true,
+        })
+    );
 
-    const nedbJobs: NeDbJob[] = [
+    const nedbJobs: DBJob[] = [
         {
             _id: "1",
             type: "type",
@@ -256,7 +265,7 @@ test("listJobs", async () => {
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const repository = (queue as any).repository as JobRepository;
+    const repository = (queue as any).repository as IJobRepository;
     const mockedRepositoryListJobs = jest.fn().mockResolvedValue(nedbJobs);
     repository.listJobs = mockedRepositoryListJobs;
 
@@ -290,11 +299,13 @@ test("listJobs", async () => {
 
 describe("removeJobById", () => {
     test("found", async () => {
-        const queue = await Queue.createQueue({
-            inMemoryOnly: true,
-        });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
-        const nedbJob: NeDbJob = {
+        const nedbJob: DBJob = {
             _id: "1",
             type: "type",
             priority: Priority.NORMAL,
@@ -324,7 +335,7 @@ describe("removeJobById", () => {
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const repository = (queue as any).repository as JobRepository;
+        const repository = (queue as any).repository as IJobRepository;
         const mockedRepositoryFindJob = jest.fn().mockResolvedValue(nedbJob);
         repository.findJob = mockedRepositoryFindJob;
 
@@ -336,12 +347,14 @@ describe("removeJobById", () => {
     });
 
     test("not found", async () => {
-        const queue = await Queue.createQueue({
-            inMemoryOnly: true,
-        });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const repository = (queue as any).repository as JobRepository;
+        const repository = (queue as any).repository as IJobRepository;
         const mockedRepositoryFindJob = jest.fn().mockResolvedValue(null);
         repository.findJob = mockedRepositoryFindJob;
 
@@ -356,11 +369,13 @@ describe("removeJobById", () => {
 });
 
 test("removeJobsByCallback", async () => {
-    const queue = await Queue.createQueue({
-        inMemoryOnly: true,
-    });
+    const queue = await Queue.createQueue(
+        new NedbJobRepository({
+            inMemoryOnly: true,
+        })
+    );
 
-    const nedbJobs: NeDbJob[] = [
+    const nedbJobs: DBJob[] = [
         {
             _id: "1",
             type: "type",
@@ -422,7 +437,7 @@ test("removeJobsByCallback", async () => {
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const repository = (queue as any).repository as JobRepository;
+    const repository = (queue as any).repository as IJobRepository;
     const mockedRepositoryListJobs = jest.fn().mockResolvedValue(nedbJobs);
     repository.listJobs = mockedRepositoryListJobs;
 
@@ -482,7 +497,11 @@ describe("requestJobForProcessing", () => {
         // eslint-disable-next-line
         (uuid as any).mockReturnValue(uuidValue);
 
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         await queue.createJob({
             type: "type",
@@ -513,7 +532,11 @@ describe("requestJobForProcessing", () => {
             .mockReturnValueOnce(uuidValues[1])
             .mockReturnValueOnce(uuidValues[2]);
 
-        const queue = await Queue.createQueue({ inMemoryOnly: true });
+        const queue = await Queue.createQueue(
+            new NedbJobRepository({
+                inMemoryOnly: true,
+            })
+        );
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const waitingRequests: { [type: string]: WaitingWorkerRequest[] } = (queue as any).waitingRequests;
@@ -580,7 +603,11 @@ describe("requestJobForProcessing", () => {
             // eslint-disable-next-line
             (uuid as any).mockReturnValue(uuidValue);
 
-            const queue = await Queue.createQueue({ inMemoryOnly: true });
+            const queue = await Queue.createQueue(
+                new NedbJobRepository({
+                    inMemoryOnly: true,
+                })
+            );
 
             await queue.createJob({
                 type: "type",
@@ -604,7 +631,11 @@ describe("requestJobForProcessing", () => {
             // eslint-disable-next-line
             (uuid as any).mockReturnValue(uuidValue);
 
-            const queue = await Queue.createQueue({ inMemoryOnly: true });
+            const queue = await Queue.createQueue(
+                new NedbJobRepository({
+                    inMemoryOnly: true,
+                })
+            );
 
             const findJobPromise1 = queue.requestJobForProcessing("type", () => false);
             const findJobPromise2 = queue.requestJobForProcessing("type", () => false);

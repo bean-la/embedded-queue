@@ -1,7 +1,6 @@
-import DataStore, { DataStoreOptions } from "nedb";
 import { Job } from "./job";
 import { State } from "./state";
-export interface NeDbJob {
+export interface DBJob {
     _id: string;
     type: string;
     priority: number;
@@ -16,16 +15,13 @@ export interface NeDbJob {
     progress?: number;
     logs: string[];
 }
-export declare type DbOptions = DataStoreOptions;
-export declare class JobRepository {
-    protected readonly db: DataStore;
-    constructor(dbOptions?: DbOptions);
+export interface IJobRepository {
     init(): Promise<void>;
-    listJobs(state?: State): Promise<NeDbJob[]>;
-    findJob(id: string): Promise<NeDbJob | null>;
-    findInactiveJobByType(type: string): Promise<NeDbJob | null>;
+    listJobs(state?: State): Promise<DBJob[]>;
+    findJob(id: string): Promise<DBJob | null>;
+    findInactiveJobByType(type: string): Promise<DBJob | null>;
     isExistJob(id: string): Promise<boolean>;
-    addJob(job: Job): Promise<NeDbJob>;
+    addJob(job: Job): Promise<DBJob>;
     updateJob(job: Job): Promise<void>;
     removeJob(id: string): Promise<void>;
 }

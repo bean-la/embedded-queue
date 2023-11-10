@@ -45,22 +45,22 @@ export class Worker {
 
     public shutdown(timeoutMilliseconds: number): Promise<void> {
         return new Promise((resolve) => {
-            // 実行中でなければ、何もしないで終了
+            // If not running, do nothing and exit
             if (this._isRunning === false) {
                 resolve();
                 return;
             }
 
-            // 非実行状態に移行
+            // Transition to non-execution state
             this._isRunning = false;
 
-            // 処理中のジョブがなければ、シャットダウン完了
+            // If there is no job in progress, shutdown is complete
             if (this._currentJob === null) {
                 resolve();
                 return;
             }
 
-            // タイムアウトまでに処理中のジョブが完了しなければジョブを失敗にする
+            // If the job in progress does not complete by the timeout, the job will fail
             this.shutdownInfo = {
                 timer: setTimeout(async () => {
                     // istanbul ignore if
@@ -83,8 +83,8 @@ export class Worker {
     }
 
     protected startInternal(processor: Processor): void {
-        // 実行中じゃなければシャットダウンが進行中なので、処理を中断する
-        // Note: この処理は本当は下に書きたいのだけど、TypeScriptの型認識が間違ってしまうため、ここに書いている
+        // If not running, shutdown is in progress, so abort processing
+        // Note: This processing should be written below, but TypeScript's type recognition is incorrect, so it is written here
         if (this._isRunning === false) {
             if (this.shutdownInfo !== null) {
                 clearTimeout(this.shutdownInfo.timer);
@@ -98,9 +98,9 @@ export class Worker {
         (async (): Promise<void> => {
             this._currentJob = await this.queue.requestJobForProcessing(this.type, () => this._isRunning);
 
-            // 実行中じゃなければシャットダウンが進行中なので、処理を中断する
+            // If not running, shutdown is in progress, so abort processing
             if (this._isRunning === false) {
-                // this._isRunningがfalseの場合、this.queue.requestProcessJobはnullを返すことになっている
+                // If this._isRunning is false, this.queue.requestProcessJob should return null
                 if (this._currentJob !== null) {
                     console.warn(`this._currentJob is not null`);
                 }
@@ -111,14 +111,13 @@ export class Worker {
 
             await this.process(processor);
 
-            // Note: 上の処理は本当はここに書きたい
+            // Note: The above processing should be written here
 
             this.startInternal(processor);
         })();
     }
 
     protected async process(processor: Processor): Promise<void> {
-        // istanbul ignore if
         if (this._currentJob === null) {
             console.warn(`this._currentJob is null`);
             return;

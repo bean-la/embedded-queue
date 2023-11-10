@@ -5,10 +5,10 @@ import { v4 as uuid } from "uuid";
 
 import { Event } from "./event";
 import { Job } from "./job";
-import { DbOptions, JobRepository, NeDbJob } from "./jobRepository";
 import { Priority } from "./priority";
 import { State } from "./state";
 import { Worker } from "./worker";
+import { DBJob, IJobRepository } from "./types";
 
 export interface CreateJobData {
     type: string;
@@ -25,8 +25,8 @@ interface WaitingWorkerRequest {
 }
 
 export class Queue extends EventEmitter {
-    public static async createQueue(dbOptions?: DbOptions): Promise<Queue> {
-        const queue = new Queue(dbOptions);
+    public static async createQueue(repository: IJobRepository): Promise<Queue> {
+        const queue = new Queue(repository);
 
         await queue.repository.init();
 
@@ -49,7 +49,7 @@ export class Queue extends EventEmitter {
         return Priority.NORMAL;
     }
 
-    protected readonly repository: JobRepository;
+    protected readonly repository: IJobRepository;
 
     // tslint:disable:variable-name
     protected _workers: Worker[];
@@ -63,10 +63,10 @@ export class Queue extends EventEmitter {
         return [...this._workers];
     }
 
-    protected constructor(dbOptions?: DbOptions) {
+    protected constructor(repository: IJobRepository) {
         super();
 
-        this.repository = new JobRepository(dbOptions);
+        this.repository = repository
         this._workers = [];
         this.waitingRequests = {};
         this.requestJobForProcessingMutex = new Mutex();
@@ -155,7 +155,7 @@ export class Queue extends EventEmitter {
     }
 
     public async removeJobById(id: string): Promise<void> {
-        let neDbJob: NeDbJob | null;
+        let neDbJob: DBJob | null;
         try {
             neDbJob = await this.repository.findJob(id);
         }
@@ -208,14 +208,14 @@ export class Queue extends EventEmitter {
 
     /** @package */
     public async requestJobForProcessing(type: string, stillRequest: () => boolean): Promise<Job | null> {
-        // すでにジョブの作成を待っているリクエストがあれば、行列の末尾に足す
+        // If you have already created a job, there is a request
         if (this.waitingRequests[type] !== undefined && this.waitingRequests[type].length > 0) {
             return new Promise<Job>((resolve, reject) => {
                 this.waitingRequests[type].push({ resolve, reject, stillRequest });
             });
         }
 
-        // 同じジョブを多重処理しないように排他制御
+        // Exclusive control to prevent the same job from being processed multiple times
         const releaseMutex = await this.requestJobForProcessingMutex.acquire();
         try {
             const neDbJob = await this.repository.findInactiveJobByType(type);
@@ -324,7 +324,7 @@ export class Queue extends EventEmitter {
         }
     }
 
-    protected convertNeDbJobToJob(neDbJob: NeDbJob): Job {
+    protected convertNeDbJobToJob(neDbJob: DBJob): Job {
         return new Job({
             queue: this,
             id: neDbJob._id,
