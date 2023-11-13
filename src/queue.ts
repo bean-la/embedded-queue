@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 
-import { Mutex } from "await-semaphore";
 import { v4 as uuid } from "uuid";
 
 import { Event } from "./event";
@@ -9,6 +8,7 @@ import { Priority } from "./priority";
 import { State } from "./state";
 import { Worker } from "./worker";
 import { DBJob, IJobRepository } from "./types";
+import Semaphore from "semaphore-async-await";
 
 export interface CreateJobData {
     type: string;
@@ -23,6 +23,8 @@ interface WaitingWorkerRequest {
     reject: (error: Error) => void;
     stillRequest: () => boolean;
 }
+
+
 
 export class Queue extends EventEmitter {
     public static async createQueue(repository: IJobRepository): Promise<Queue> {
@@ -57,7 +59,7 @@ export class Queue extends EventEmitter {
 
     protected waitingRequests: { [type: string]: WaitingWorkerRequest[] };
 
-    protected requestJobForProcessingMutex: Mutex;
+    protected lock: Semaphore;
 
     public get workers(): Worker[] {
         return [...this._workers];
@@ -69,7 +71,7 @@ export class Queue extends EventEmitter {
         this.repository = repository
         this._workers = [];
         this.waitingRequests = {};
-        this.requestJobForProcessingMutex = new Mutex();
+        this.lock = new Semaphore(1);
     }
 
     public async createJob(data: CreateJobData): Promise<Job> {
@@ -216,7 +218,7 @@ export class Queue extends EventEmitter {
         }
 
         // Exclusive control to prevent the same job from being processed multiple times
-        const releaseMutex = await this.requestJobForProcessingMutex.acquire();
+        await this.lock.acquire();
         try {
             const neDbJob = await this.repository.findInactiveJobByType(type);
 
@@ -246,7 +248,7 @@ export class Queue extends EventEmitter {
             throw error;
         }
         finally {
-            releaseMutex();
+            this.lock.release();
         }
     }
 

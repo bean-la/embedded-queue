@@ -19,7 +19,7 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "await-semaphore": "^0.1.3",
+    "semaphore-async-await": "^1.5.1",
     "uuid": "8.x"
   },
   "devDependencies": {
