@@ -1,0 +1,9 @@
+/.github
+/node_modules
+/test
+
+.eslintignore
+.eslintrc.js
+
+jest.config.js
+yarn.lock

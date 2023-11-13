@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 
-import { DBJob, IJobRepository, Job, NedbJobRepository, Priority, Queue, State } from "../src";
+import { DBJob, IJobRepository, NedbJobRepository, Job, Priority, Queue, State } from "../src";
 
 // Note: Same as src/queue.ts
 interface WaitingWorkerRequest {

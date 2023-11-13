@@ -1,5 +1,6 @@
 import { EventEmitter } from "events";
-
+import nextTick from "next-tick";
+import Semaphore from "semaphore-async-await";
 import { v4 as uuid } from "uuid";
 
 import { Event } from "./event";
@@ -8,7 +9,6 @@ import { Priority } from "./priority";
 import { State } from "./state";
 import { Worker } from "./worker";
 import { DBJob, IJobRepository } from "./types";
-import Semaphore from "semaphore-async-await";
 
 export interface CreateJobData {
     type: string;
@@ -288,7 +288,7 @@ export class Queue extends EventEmitter {
             await addedJob.setStateToActive();
 
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            process.nextTick(() => processRequest!.resolve(addedJob));
+            nextTick(() => processRequest!.resolve(addedJob));
         }
         catch (error) {
             this.emit(Event.Error, error, job);

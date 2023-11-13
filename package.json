@@ -19,12 +19,14 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
+    "next-tick": "^1.1.0",
     "semaphore-async-await": "^1.5.1",
     "uuid": "8.x"
   },
   "devDependencies": {
     "@types/jest": "27.x",
     "@types/nedb": "1.8.x",
+    "@types/next-tick": "^1.0.2",
     "@types/node": "*",
     "@types/uuid": "8.x",
     "@typescript-eslint/eslint-plugin": "5.x",
