@@ -1,6 +1,6 @@
 {
   "name": "@astodi/embedded-queue",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Embedded job/message queue",
   "main": "dist/index.js",
   "license": "MIT",
