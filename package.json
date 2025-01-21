@@ -1,5 +1,5 @@
 {
-  "name": "@astodi/embedded-queue",
+  "name": "embedded-queue",
   "version": "0.0.3",
   "description": "Embedded job/message queue",
   "main": "dist/index.js",
