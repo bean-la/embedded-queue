@@ -1,7 +1,7 @@
 .vscode
 node_modules
 .DS_Store
-/.idea
-/build
-/dist
-/.cache
+.idea
+build
+dist
+.cache
