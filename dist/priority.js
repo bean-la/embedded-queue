@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toString = exports.Priority = void 0;
+exports.Priority = void 0;
+exports.toString = toString;
 var Priority;
 (function (Priority) {
     Priority[Priority["LOW"] = 1] = "LOW";
@@ -8,7 +9,7 @@ var Priority;
     Priority[Priority["MEDIUM"] = 3] = "MEDIUM";
     Priority[Priority["HIGH"] = 4] = "HIGH";
     Priority[Priority["CRITICAL"] = 5] = "CRITICAL";
-})(Priority = exports.Priority || (exports.Priority = {}));
+})(Priority || (exports.Priority = Priority = {}));
 function toString(priority) {
     switch (priority) {
         case Priority.LOW:
@@ -23,4 +24,3 @@ function toString(priority) {
             return "CRITICAL";
     }
 }
-exports.toString = toString;

@@ -14,13 +14,6 @@ const priority_1 = require("./priority");
 const state_1 = require("./state");
 const worker_1 = require("./worker");
 class Queue extends events_1.EventEmitter {
-    constructor(repository) {
-        super();
-        this.repository = repository;
-        this._workers = [];
-        this.waitingRequests = {};
-        this.lock = new semaphore_async_await_1.default(1);
-    }
     static async createQueue(repository) {
         const queue = new Queue(repository);
         await queue.repository.init();
@@ -41,6 +34,13 @@ class Queue extends events_1.EventEmitter {
     }
     get workers() {
         return [...this._workers];
+    }
+    constructor(repository) {
+        super();
+        this.repository = repository;
+        this._workers = [];
+        this.waitingRequests = {};
+        this.lock = new semaphore_async_await_1.default(1);
     }
     async createJob(data) {
         const now = new Date();

@@ -2,14 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Worker = void 0;
 class Worker {
-    constructor(data) {
-        this.shutdownInfo = null;
-        // tslint:disable:variable-name
-        this._isRunning = false;
-        this._currentJob = null;
-        this.type = data.type;
-        this.queue = data.queue;
-    }
     // tslint:disable:variable-name
     // noinspection JSUnusedGlobalSymbols
     get isRunning() {
@@ -18,6 +10,14 @@ class Worker {
     // noinspection JSUnusedGlobalSymbols
     get currentJob() {
         return this._currentJob;
+    }
+    constructor(data) {
+        this.shutdownInfo = null;
+        // tslint:disable:variable-name
+        this._isRunning = false;
+        this._currentJob = null;
+        this.type = data.type;
+        this.queue = data.queue;
     }
     start(processor) {
         this._isRunning = true;

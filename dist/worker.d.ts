@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { Job } from "./job";
 import { Processor, Queue } from "./queue";
 interface WorkerConstructorData {

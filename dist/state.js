@@ -7,4 +7,4 @@ var State;
     State["ACTIVE"] = "ACTIVE";
     State["COMPLETE"] = "COMPLETE";
     State["FAILURE"] = "FAILURE";
-})(State = exports.State || (exports.State = {}));
+})(State || (exports.State = State = {}));

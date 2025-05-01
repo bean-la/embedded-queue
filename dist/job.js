@@ -5,23 +5,6 @@ const event_1 = require("./event");
 const priority_1 = require("./priority");
 const state_1 = require("./state");
 class Job {
-    constructor(data) {
-        this.queue = data.queue;
-        this.id = data.id;
-        this.type = data.type;
-        this._priority = data.priority || priority_1.Priority.NORMAL;
-        this.data = data.data;
-        this._state = data.state || state_1.State.INACTIVE;
-        this._createdAt = data.createdAt;
-        this._updatedAt = data.updatedAt;
-        this._startedAt = data.startedAt;
-        this._completedAt = data.completedAt;
-        this._failedAt = data.failedAt;
-        this._logs = [...data.logs];
-        this._duration = data.duration;
-        this._progress = data.progress;
-        this._saved = data.saved;
-    }
     // tslint:enable:variable-name
     get priority() {
         return this._priority;
@@ -52,6 +35,23 @@ class Job {
     }
     get logs() {
         return [...this._logs];
+    }
+    constructor(data) {
+        this.queue = data.queue;
+        this.id = data.id;
+        this.type = data.type;
+        this._priority = data.priority || priority_1.Priority.NORMAL;
+        this.data = data.data;
+        this._state = data.state || state_1.State.INACTIVE;
+        this._createdAt = data.createdAt;
+        this._updatedAt = data.updatedAt;
+        this._startedAt = data.startedAt;
+        this._completedAt = data.completedAt;
+        this._failedAt = data.failedAt;
+        this._logs = [...data.logs];
+        this._duration = data.duration;
+        this._progress = data.progress;
+        this._saved = data.saved;
     }
     async setProgress(completed, total) {
         this._progress = completed * 100 / total;

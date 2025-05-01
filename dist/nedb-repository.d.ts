@@ -2,7 +2,7 @@ import DataStore, { DataStoreOptions } from "nedb";
 import { Job } from "./job";
 import { State } from "./state";
 import { DBJob, IJobRepository } from "./types";
-export declare type DbOptions = DataStoreOptions;
+export type DbOptions = DataStoreOptions;
 export declare class NedbJobRepository implements IJobRepository {
     protected readonly db: DataStore;
     constructor(dbOptions?: DbOptions);

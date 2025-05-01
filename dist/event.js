@@ -12,4 +12,4 @@ var Event;
     Event["Progress"] = "progress";
     Event["Log"] = "log";
     Event["Priority"] = "priority";
-})(Event = exports.Event || (exports.Event = {}));
+})(Event || (exports.Event = Event = {}));

@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { EventEmitter } from "events";
 import Semaphore from "semaphore-async-await";
 import { Job } from "./job";
@@ -11,7 +10,7 @@ export interface CreateJobData {
     priority?: Priority;
     data?: unknown;
 }
-export declare type Processor = (job: Job) => Promise<unknown>;
+export type Processor = (job: Job) => Promise<unknown>;
 interface WaitingWorkerRequest {
     resolve: (value: Job) => void;
     reject: (error: Error) => void;
