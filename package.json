@@ -14,8 +14,10 @@
     "email": "hajnalbenjamin@gmail.com"
   },
   "scripts": {
+    "build": "tsc -p .",
     "test": "jest",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "postinstall": "pnpm run build"
   },
   "dependencies": {
     "next-tick": "^1.1.0",
