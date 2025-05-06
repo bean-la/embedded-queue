@@ -8,5 +8,3 @@ export { Priority, toString as priorityToString } from "./priority";
 export type { DBJob, IJobRepository } from "./types";
 export { NedbJobRepository } from "./nedb-repository";
 export { InMemoryJobRepository } from "./memory-repository";
-
-export { Job, Event, State } from "./client-types";
