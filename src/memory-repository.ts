@@ -6,7 +6,7 @@ import { DBJob, IJobRepository } from "./types";
 export class InMemoryJobRepository implements IJobRepository {
     private jobs = new Map<string, DBJob>();
 
-    constructor(o: any) {
+    constructor(_o: any) {
     }
 
     init(): Promise<void> {
@@ -14,7 +14,7 @@ export class InMemoryJobRepository implements IJobRepository {
     }
 
     listJobs(state?: State | undefined): Promise<DBJob[]> {
-        return new Promise<DBJob[]>((resolve, reject) => {
+        return new Promise<DBJob[]>((resolve, _reject) => {
             const jobs = Array.from(this.jobs.values());
 
             resolve(jobs.filter(job => {
@@ -28,7 +28,7 @@ export class InMemoryJobRepository implements IJobRepository {
     }
 
     findJob(id: string): Promise<DBJob | null> {
-        return new Promise<DBJob | null>((resolve, reject) => {
+        return new Promise<DBJob | null>((resolve, _reject) => {
             const job = this.jobs.get(id);
 
             resolve(job || null);
@@ -36,7 +36,7 @@ export class InMemoryJobRepository implements IJobRepository {
     }
 
     findInactiveJobByType(type: string): Promise<DBJob | null> {
-        return new Promise<DBJob | null>((resolve, reject) => {
+        return new Promise<DBJob | null>((resolve, _reject) => {
             const jobs = Array.from(this.jobs.values());
 
             const job = jobs.find(job => job.type === type && job.state === State.INACTIVE);
@@ -47,13 +47,13 @@ export class InMemoryJobRepository implements IJobRepository {
     }
 
     isExistJob(id: string): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+        return new Promise<boolean>((resolve, _reject) => {
             resolve(this.jobs.has(id));
         });
     }
 
     addJob(job: Job): Promise<DBJob> {
-        return new Promise<DBJob>((resolve, reject) => {
+        return new Promise<DBJob>((resolve, _reject) => {
             const dbJob: DBJob = {
                 _id: job.id,
                 type: job.type,
@@ -93,7 +93,7 @@ export class InMemoryJobRepository implements IJobRepository {
     }
 
     removeJob(id: string): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve, _reject) => {
             this.jobs.delete(id);
 
             resolve();

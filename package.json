@@ -2,9 +2,7 @@
   "name": "embedded-queue",
   "version": "0.0.4",
   "description": "Embedded job/message queue",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
+  "main": "src/index.ts",
   "license": "MIT",
   "keywords": [
     "queue",
@@ -18,8 +16,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "jest",
-    "lint": "eslint . --ext .ts",
-    "postinstall": "pnpm run build"
+    "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "next-tick": "^1.1.0",
