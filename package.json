@@ -3,6 +3,8 @@
   "version": "0.0.4",
   "description": "Embedded job/message queue",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "license": "MIT",
   "keywords": [
     "queue",
