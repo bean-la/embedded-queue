@@ -1,6 +1,6 @@
 
 import { Job } from "./job";
-import { State } from "./state";
+import { State, type StateType } from "./state";
 import { DBJob, IJobRepository } from "./types";
 
 export class InMemoryJobRepository implements IJobRepository {
@@ -13,7 +13,7 @@ export class InMemoryJobRepository implements IJobRepository {
         return Promise.resolve(void 0);
     }
 
-    listJobs(state?: State | undefined): Promise<DBJob[]> {
+    listJobs(state?: StateType | undefined): Promise<DBJob[]> {
         return new Promise<DBJob[]>((resolve, _reject) => {
             const jobs = Array.from(this.jobs.values());
 

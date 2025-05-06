@@ -1,5 +1,5 @@
 import { Job } from "./job";
-import { State } from "./state";
+import type { StateType } from "./state";
 
 export interface DBJob {
     _id: string;
@@ -11,7 +11,7 @@ export interface DBJob {
     startedAt?: Date;
     completedAt?: Date;
     failedAt?: Date;
-    state?: State;
+    state?: StateType;
     duration?: number;
     progress?: number;
     logs: string[];
@@ -19,7 +19,7 @@ export interface DBJob {
 
 export interface IJobRepository {
     init(): Promise<void>
-    listJobs(state?: State): Promise<DBJob[]>
+    listJobs(state?: StateType): Promise<DBJob[]>
     findJob(id: string): Promise<DBJob | null>
     findInactiveJobByType(type: string): Promise<DBJob | null>
     isExistJob(id: string): Promise<boolean>

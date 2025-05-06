@@ -1,7 +1,7 @@
 import DataStore, { DataStoreOptions } from "nedb";
 
 import { Job } from "./job";
-import { State } from "./state";
+import { State, type StateType } from "./state";
 import { DBJob, IJobRepository } from "./types";
 
 export type DbOptions = DataStoreOptions;
@@ -26,7 +26,7 @@ export class NedbJobRepository implements IJobRepository {
         });
     }
 
-    public listJobs(state?: State): Promise<DBJob[]> {
+    public listJobs(state?: StateType): Promise<DBJob[]> {
         return new Promise<DBJob[]>((resolve, reject) => {
             const query = (state === undefined) ? {} : { state };
 
@@ -45,14 +45,14 @@ export class NedbJobRepository implements IJobRepository {
 
     public findJob(id: string): Promise<DBJob | null> {
         return new Promise<DBJob | null>((resolve, reject) => {
-            this.db.findOne({ _id: id }, (error, doc: DBJob| null) => {
-                    if (error !== null) {
-                        reject(error);
-                        return;
-                    }
+            this.db.findOne({ _id: id }, (error, doc: DBJob | null) => {
+                if (error !== null) {
+                    reject(error);
+                    return;
+                }
 
-                    resolve(doc);
-                });
+                resolve(doc);
+            });
         });
     }
 

@@ -10,4 +10,4 @@ export const Event = {
     Priority: "priority",
 } as const
 
-export type Event = typeof Event[keyof typeof Event]
+export type EventType = typeof Event[keyof typeof Event]

@@ -6,7 +6,7 @@ import { v4 as uuid } from "uuid";
 import { Event } from "./event";
 import { Job } from "./job";
 import { Priority } from "./priority";
-import { State } from "./state";
+import { State, type StateType } from "./state";
 import { Worker } from "./worker";
 import { DBJob, IJobRepository } from "./types";
 
@@ -144,7 +144,7 @@ export class Queue extends EventEmitter {
         }
     }
 
-    public async listJobs(state?: State): Promise<Job[]> {
+    public async listJobs(state?: StateType): Promise<Job[]> {
         try {
             return await this.repository.listJobs(state).then((docs) => {
                 return docs.map((neDbJob) => this.convertNeDbJobToJob(neDbJob));
@@ -346,3 +346,4 @@ export class Queue extends EventEmitter {
         })
     }
 }
+export type { Queue as QueueType }

@@ -1,7 +1,7 @@
 import { Event } from "./event";
 import { Priority } from "./priority";
 import { Queue } from "./queue";
-import { State } from "./state";
+import { State, StateType } from "./state";
 
 export interface JobConstructorData {
     queue: Queue;
@@ -14,7 +14,7 @@ export interface JobConstructorData {
     startedAt?: Date;
     completedAt?: Date;
     failedAt?: Date;
-    state?: State;
+    state?: StateType;
     duration?: number;
     progress?: number;
     logs: string[];
@@ -35,7 +35,7 @@ export class Job {
     protected _startedAt: Date | undefined;
     protected _completedAt: Date | undefined;
     protected _failedAt: Date | undefined;
-    protected _state: State;
+    protected _state: StateType;
     protected _duration: number | undefined;
     protected _progress: number | undefined;
     protected _logs: string[];
@@ -66,7 +66,7 @@ export class Job {
         return this._failedAt;
     }
 
-    public get state(): State {
+    public get state(): StateType {
         return this._state;
     }
 
@@ -200,3 +200,4 @@ export class Job {
         await this.queue.updateJob(this);
     }
 }
+export type { Job as JobType }

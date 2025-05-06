@@ -5,4 +5,4 @@ export const State = {
     FAILURE: "FAILURE",
 } as const;
 
-export type State = typeof State[keyof typeof State];
+export type StateType = typeof State[keyof typeof State];
