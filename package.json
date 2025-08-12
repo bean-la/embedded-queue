@@ -2,6 +2,7 @@
   "name": "embedded-queue",
   "version": "0.0.4",
   "description": "Embedded job/message queue",
+  "type": "module",
   "exports": {
     ".": "./dist/index.js",
     "./client-types": "./dist/client-types.js"
