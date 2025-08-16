@@ -21,7 +21,7 @@
     "build": "tsc -p tsconfig.json",
     "test": "jest",
     "lint": "eslint . --ext .ts",
-    "postinstall": "pnpm run build"
+    "postinstall": "pnpm build"
   },
   "dependencies": {
     "next-tick": "^1.1.0",
