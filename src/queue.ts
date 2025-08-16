@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import nextTick from "next-tick";
-import Semaphore from "semaphore-async-await";
+import { default as Semaphore } from "semaphore-async-await";
 import { v4 as uuid } from "uuid";
 
 import { Event } from "./event";
