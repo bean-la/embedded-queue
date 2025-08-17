@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import nextTick from "next-tick";
-import { default as Semaphore } from "semaphore-async-await";
+import { Sema } from 'async-sema';
 import { v4 as uuid } from "uuid";
 
 import { Event } from "./event";
@@ -59,7 +59,7 @@ export class Queue extends EventEmitter {
 
     protected waitingRequests: { [type: string]: WaitingWorkerRequest[] };
 
-    protected lock: Semaphore;
+    protected lock: Sema;
 
     public get workers(): Worker[] {
         return [...this._workers];
@@ -71,7 +71,7 @@ export class Queue extends EventEmitter {
         this.repository = repository
         this._workers = [];
         this.waitingRequests = {};
-        this.lock = new Semaphore(1);
+        this.lock = new Sema(1);
     }
 
     public async createJob(data: CreateJobData): Promise<Job> {

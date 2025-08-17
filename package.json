@@ -24,8 +24,8 @@
     "postinstall": "pnpm build"
   },
   "dependencies": {
+    "async-sema": "^3.1.1",
     "next-tick": "^1.1.0",
-    "semaphore-async-await": "^1.5.1",
     "uuid": "8.x"
   },
   "devDependencies": {
