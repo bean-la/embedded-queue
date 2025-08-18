@@ -1,4 +1,4 @@
-export type { JobType } from "./job";
-export type { EventType } from "./event";
-export type { StateType } from "./state";
-export type { QueueType } from "./queue";
+export type { JobType } from "./job.js";
+export type { EventType } from "./event.js";
+export type { StateType } from "./state.js";
+export type { QueueType } from "./queue.js";

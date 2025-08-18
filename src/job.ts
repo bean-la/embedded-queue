@@ -1,7 +1,7 @@
-import { Event } from "./event";
-import { Priority } from "./priority";
-import { Queue } from "./queue";
-import { State, StateType } from "./state";
+import { Event } from "./event.js";
+import { Priority } from "./priority.js";
+import { Queue } from "./queue.js";
+import { State, StateType } from "./state.js";
 
 export interface JobConstructorData {
     queue: Queue;

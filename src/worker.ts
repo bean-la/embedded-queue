@@ -1,5 +1,5 @@
-import { Job } from "./job";
-import { Processor, Queue } from "./queue";
+import { Job } from "./job.js";
+import { Processor, Queue } from "./queue.js";
 
 interface WorkerConstructorData {
     type: string;

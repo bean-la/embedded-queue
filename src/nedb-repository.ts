@@ -1,8 +1,8 @@
 import DataStore, { DataStoreOptions } from "nedb";
 
-import { Job } from "./job";
-import { State, type StateType } from "./state";
-import { DBJob, IJobRepository } from "./types";
+import { Job } from "./job.js";
+import { State, type StateType } from "./state.js";
+import { DBJob, IJobRepository } from "./types.js";
 
 export type DbOptions = DataStoreOptions;
 

@@ -1,14 +1,14 @@
-export type { CreateJobData, Processor } from "./queue";
-export { Queue } from "./queue";
-export { Worker } from "./worker";
+export type { CreateJobData, Processor } from "./queue.js";
+export { Queue } from "./queue.js";
+export { Worker } from "./worker.js";
 // export { Job } from "./job";
-export { Priority, toString as priorityToString } from "./priority";
+export { Priority, toString as priorityToString } from "./priority.js";
 // export { State } from "./state";
 // export { Event } from "./event";
-export { Event as QueueEvent } from "./event";
-export { State as QueueState } from "./state";
-export type { DBJob, IJobRepository } from "./types";
-export { NedbJobRepository } from "./nedb-repository";
-export { InMemoryJobRepository } from "./memory-repository";
+export { Event as QueueEvent } from "./event.js";
+export { State as QueueState } from "./state.js";
+export type { DBJob, IJobRepository } from "./types.js";
+export { NedbJobRepository } from "./nedb-repository.js";
+export { InMemoryJobRepository } from "./memory-repository.js";
 
-export type * from "./client-types"
+export type * from "./client-types.js"

@@ -1,7 +1,7 @@
 
-import { Job } from "./job";
-import { State, type StateType } from "./state";
-import { DBJob, IJobRepository } from "./types";
+import { Job } from "./job.js";
+import { State, type StateType } from "./state.js";
+import { DBJob, IJobRepository } from "./types.js";
 
 export class InMemoryJobRepository implements IJobRepository {
     private jobs = new Map<string, DBJob>();

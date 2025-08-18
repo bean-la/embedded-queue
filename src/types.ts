@@ -1,5 +1,5 @@
-import { Job } from "./job";
-import type { StateType } from "./state";
+import { Job } from "./job.js";
+import type { StateType } from "./state.js";
 
 export interface DBJob {
     _id: string;

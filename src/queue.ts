@@ -3,12 +3,12 @@ import nextTick from "next-tick";
 import { Sema } from 'async-sema';
 import { v4 as uuid } from "uuid";
 
-import { Event } from "./event";
-import { Job } from "./job";
-import { Priority } from "./priority";
-import { State, type StateType } from "./state";
-import { Worker } from "./worker";
-import { DBJob, IJobRepository } from "./types";
+import { Event } from "./event.js";
+import { Job } from "./job.js";
+import { Priority } from "./priority.js";
+import { State, type StateType } from "./state.js";
+import { Worker } from "./worker.js";
+import { DBJob, IJobRepository } from "./types.js";
 
 export interface CreateJobData {
     type: string;
