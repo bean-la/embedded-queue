@@ -3,17 +3,19 @@
   "version": "0.0.4",
   "description": "Embedded job/message queue",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
     },
     "./client-types": {
-      "types": "./dist/client-types.d.ts",
-      "import": "./dist/client-types.js"
+      "types": "./dist/esm/client-types.d.ts",
+      "import": "./dist/esm/client-types.js",
+      "require": "./dist/cjs/client-types.cjs"
     }
   },
   "license": "MIT",
@@ -27,7 +29,9 @@
     "email": "hajnalbenjamin@gmail.com"
   },
   "scripts": {
-    "build": "cd ../.. && pnpm exec tsc -p _packages/embedded-queue/tsconfig.json",
+    "build": "cd ../.. && pnpm exec tsc -p _packages/embedded-queue/tsconfig.json && pnpm exec tsc -p _packages/embedded-queue/tsconfig.cjs.json && cd _packages/embedded-queue && node rename-cjs.cjs",
+    "build:esm": "cd ../.. && pnpm exec tsc -p _packages/embedded-queue/tsconfig.json",
+    "build:cjs": "cd ../.. && pnpm exec tsc -p _packages/embedded-queue/tsconfig.cjs.json && cd _packages/embedded-queue && node rename-cjs.cjs",
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "postinstall": "pnpm build"
