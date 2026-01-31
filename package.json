@@ -33,8 +33,7 @@
     "build:esm": "cd ../.. && pnpm exec tsc -p _packages/embedded-queue/tsconfig.json",
     "build:cjs": "cd ../.. && pnpm exec tsc -p _packages/embedded-queue/tsconfig.cjs.json && cd _packages/embedded-queue && node rename-cjs.cjs",
     "test": "jest",
-    "lint": "eslint . --ext .ts",
-    "postinstall": "pnpm build"
+    "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "async-sema": "^3.1.1",
