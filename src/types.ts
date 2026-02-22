@@ -22,6 +22,8 @@ export interface IJobRepository {
     listJobs(state?: StateType): Promise<DBJob[]>
     findJob(id: string): Promise<DBJob | null>
     findInactiveJobByType(type: string): Promise<DBJob | null>
+    /** Find one inactive job whose type is in the given list (priority desc, createdAt asc). */
+    findInactiveJobByTypes(types: string[]): Promise<DBJob | null>
     isExistJob(id: string): Promise<boolean>
     addJob(job: Job): Promise<DBJob>
     updateJob(job: Job): Promise<void>

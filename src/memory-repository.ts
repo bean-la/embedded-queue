@@ -43,7 +43,23 @@ export class InMemoryJobRepository implements IJobRepository {
 
             resolve(job || null);
         });
+    }
 
+    findInactiveJobByTypes(types: string[]): Promise<DBJob | null> {
+        if (types.length === 0) {
+            return Promise.resolve(null);
+        }
+        const set = new Set(types);
+        return new Promise<DBJob | null>((resolve, _reject) => {
+            const jobs = Array.from(this.jobs.values())
+                .filter(job => job.state === State.INACTIVE && set.has(job.type))
+                .sort((a, b) => {
+                    const p = (b.priority ?? 0) - (a.priority ?? 0);
+                    if (p !== 0) return p;
+                    return a.createdAt.getTime() - b.createdAt.getTime();
+                });
+            resolve(jobs[0] ?? null);
+        });
     }
 
     isExistJob(id: string): Promise<boolean> {

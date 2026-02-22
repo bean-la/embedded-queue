@@ -208,6 +208,33 @@ export class Queue extends EventEmitter {
         return removedJobs;
     }
 
+    /**
+     * Atomically lease one inactive job whose type is in the given list.
+     * Returns the job with state set to ACTIVE, or null if none available.
+     */
+    public async leaseJob(types: string[]): Promise<Job | null> {
+        if (types.length === 0) {
+            return null;
+        }
+        await this.lock.acquire();
+        try {
+            const neDbJob = await this.repository.findInactiveJobByTypes(types);
+
+            if (neDbJob === null) {
+                return null;
+            }
+
+            const job = this.convertNeDbJobToJob(neDbJob);
+            await job.setStateToActive();
+            return job;
+        } catch (error) {
+            this.emit(Event.Error, error);
+            throw error;
+        } finally {
+            this.lock.release();
+        }
+    }
+
     /** @package */
     public async requestJobForProcessing(type: string, stillRequest: () => boolean): Promise<Job | null> {
         // If you have already created a job, there is a request

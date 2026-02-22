@@ -72,6 +72,25 @@ export class NedbJobRepository implements IJobRepository {
         });
     }
 
+    public findInactiveJobByTypes(types: string[]): Promise<DBJob | null> {
+        if (types.length === 0) {
+            return Promise.resolve(null);
+        }
+        return new Promise<DBJob | null>((resolve, reject) => {
+            this.db.find({ type: { $in: types }, state: State.INACTIVE })
+                .sort({ priority: -1, createdAt: 1 })
+                .limit(1)
+                .exec((error, docs: DBJob[]) => {
+                    if (error !== null) {
+                        reject(error);
+                        return;
+                    }
+
+                    resolve((docs.length === 0) ? null : docs[0]);
+                });
+        });
+    }
+
     public isExistJob(id: string): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             this.db.count({ _id: id }, (error, count: number) => {
