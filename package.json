@@ -29,9 +29,9 @@
     "email": "hajnalbenjamin@gmail.com"
   },
   "scripts": {
-    "build": "pnpm exec tsc -p tsconfig.json; pnpm exec tsc -p tsconfig.cjs.json; node rename-cjs.cjs",
+    "build": "node run-build.cjs",
     "build:esm": "pnpm exec tsc -p tsconfig.json",
-    "build:cjs": "pnpm exec tsc -p tsconfig.cjs.json; node rename-cjs.cjs",
+    "build:cjs": "node run-build-cjs.cjs",
     "test": "jest",
     "lint": "eslint . --ext .ts"
   },
