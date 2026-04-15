@@ -4,6 +4,7 @@ import type { StateType } from "./state.js";
 export interface DBJob {
     _id: string;
     type: string;
+    dedupeKey?: string;
     priority: number;
     data?: unknown;
     createdAt: Date;
@@ -21,6 +22,7 @@ export interface IJobRepository {
     init(): Promise<void>
     listJobs(state?: StateType): Promise<DBJob[]>
     findJob(id: string): Promise<DBJob | null>
+    findJobByTypeAndDedupeKey(type: string, dedupeKey: string): Promise<DBJob | null>
     findInactiveJobByType(type: string): Promise<DBJob | null>
     /** Find one inactive job whose type is in the given list (priority desc, createdAt asc). */
     findInactiveJobByTypes(types: string[]): Promise<DBJob | null>

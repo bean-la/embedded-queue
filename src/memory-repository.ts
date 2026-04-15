@@ -35,6 +35,14 @@ export class InMemoryJobRepository implements IJobRepository {
         });
     }
 
+    findJobByTypeAndDedupeKey(type: string, dedupeKey: string): Promise<DBJob | null> {
+        return new Promise<DBJob | null>((resolve, _reject) => {
+            const jobs = Array.from(this.jobs.values());
+            const job = jobs.find((job) => job.type === type && job.dedupeKey === dedupeKey);
+            resolve(job || null);
+        });
+    }
+
     findInactiveJobByType(type: string): Promise<DBJob | null> {
         return new Promise<DBJob | null>((resolve, _reject) => {
             const jobs = Array.from(this.jobs.values());
@@ -73,6 +81,7 @@ export class InMemoryJobRepository implements IJobRepository {
             const dbJob: DBJob = {
                 _id: job.id,
                 type: job.type,
+                dedupeKey: job.dedupeKey,
                 priority: job.priority,
                 data: job.data,
                 createdAt: job.createdAt,
@@ -97,6 +106,7 @@ export class InMemoryJobRepository implements IJobRepository {
             }
 
             dbJob.type = job.type;
+            dbJob.dedupeKey = job.dedupeKey;
             dbJob.priority = job.priority;
             dbJob.data = job.data;
             dbJob.createdAt = job.createdAt;

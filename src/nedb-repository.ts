@@ -56,6 +56,19 @@ export class NedbJobRepository implements IJobRepository {
         });
     }
 
+    public findJobByTypeAndDedupeKey(type: string, dedupeKey: string): Promise<DBJob | null> {
+        return new Promise<DBJob | null>((resolve, reject) => {
+            this.db.findOne({ type, dedupeKey }, (error, doc: DBJob | null) => {
+                if (error !== null) {
+                    reject(error);
+                    return;
+                }
+
+                resolve(doc);
+            });
+        });
+    }
+
     public findInactiveJobByType(type: string): Promise<DBJob | null> {
         return new Promise<DBJob | null>((resolve, reject) => {
             this.db.find({ type, state: State.INACTIVE })
@@ -109,6 +122,7 @@ export class NedbJobRepository implements IJobRepository {
             const insertDoc = {
                 _id: job.id,
                 type: job.type,
+                dedupeKey: job.dedupeKey,
                 priority: job.priority,
                 data: job.data,
                 createdAt: job.createdAt,
@@ -136,6 +150,7 @@ export class NedbJobRepository implements IJobRepository {
             const updateQuery = {
                 $set: {
                     priority: job.priority,
+                    dedupeKey: job.dedupeKey,
                     data: job.data,
                     createdAt: job.createdAt,
                     updatedAt: job.updatedAt,

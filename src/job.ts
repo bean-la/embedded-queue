@@ -7,6 +7,7 @@ export interface JobConstructorData {
     queue: Queue;
     id: string;
     type: string;
+    dedupeKey?: string;
     priority?: Priority;
     data?: unknown;
     createdAt: Date;
@@ -25,6 +26,7 @@ export class Job {
     public readonly id: string;
     public readonly type: string;
     public readonly data: unknown | undefined;
+    public readonly dedupeKey: string | undefined;
 
     protected readonly queue: Queue;
 
@@ -87,6 +89,7 @@ export class Job {
 
         this.id = data.id;
         this.type = data.type;
+        this.dedupeKey = data.dedupeKey;
         this._priority = data.priority || Priority.NORMAL;
         this.data = data.data;
         this._state = data.state || State.INACTIVE;

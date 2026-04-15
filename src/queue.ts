@@ -14,6 +14,7 @@ export interface CreateJobData {
     type: string;
     priority?: Priority;
     data?: unknown;
+    dedupeKey?: string;
 }
 
 export type Processor = (job: Job) => Promise<unknown>;
@@ -75,24 +76,48 @@ export class Queue extends EventEmitter {
     }
 
     public async createJob(data: CreateJobData): Promise<Job> {
-        const now = new Date();
+        const { job } = await this.createJobWithStatus(data);
+        return job;
+    }
 
-        const job = new Job(
-            Object.assign(
-                {},
-                data,
-                {
-                    queue: this,
-                    id: uuid(),
-                    createdAt: now,
-                    updatedAt: now,
-                    logs: [],
-                    saved: false,
+    public async createJobWithStatus(data: CreateJobData): Promise<{ job: Job; created: boolean }> {
+        await this.lock.acquire();
+        try {
+            if (data.dedupeKey !== undefined) {
+                const existing = await this.repository.findJobByTypeAndDedupeKey(
+                    data.type,
+                    data.dedupeKey,
+                );
+
+                if (existing !== null) {
+                    return {
+                        job: this.convertNeDbJobToJob(existing),
+                        created: false,
+                    };
                 }
-            )
-        );
+            }
 
-        return await job.save();
+            const now = new Date();
+            const job = new Job(
+                Object.assign(
+                    {},
+                    data,
+                    {
+                        queue: this,
+                        id: uuid(),
+                        createdAt: now,
+                        updatedAt: now,
+                        logs: [],
+                        saved: false,
+                    }
+                )
+            );
+
+            await job.save();
+            return { job, created: true };
+        } finally {
+            this.lock.release();
+        }
     }
 
     public process(type: string, processor: Processor, concurrency: number): void {
@@ -358,6 +383,7 @@ export class Queue extends EventEmitter {
             queue: this,
             id: neDbJob._id,
             type: neDbJob.type,
+            dedupeKey: neDbJob.dedupeKey,
             priority: Queue.sanitizePriority(neDbJob.priority),
             data: neDbJob.data,
             createdAt: neDbJob.createdAt,
