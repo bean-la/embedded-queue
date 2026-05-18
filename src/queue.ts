@@ -90,10 +90,18 @@ export class Queue extends EventEmitter {
                 );
 
                 if (existing !== null) {
-                    return {
-                        job: this.convertNeDbJobToJob(existing),
-                        created: false,
-                    };
+                    // Only deduplicate against INACTIVE and ACTIVE jobs.
+                    // COMPLETE and FAILURE jobs should be allowed to re-enqueue
+                    // so failed pushes can be retried and completed jobs can rerun.
+                    if (
+                        existing.state === State.INACTIVE ||
+                        existing.state === State.ACTIVE
+                    ) {
+                        return {
+                            job: this.convertNeDbJobToJob(existing),
+                            created: false,
+                        };
+                    }
                 }
             }
 
