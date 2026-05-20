@@ -5,6 +5,9 @@ module.exports = {
         "js",
         "ts",
     ],
+    moduleNameMapper: {
+        "^(\\.{1,2}/.*)\\.js$": "$1",
+    },
     collectCoverageFrom: [
         "src/**/*.ts",
     ],

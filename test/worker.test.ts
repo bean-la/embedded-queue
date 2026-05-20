@@ -160,7 +160,7 @@ describe("shutdown", () => {
         expect(processor).toHaveBeenCalledTimes(1);
         expect(spiedJobSetStateToComplete).not.toHaveBeenCalled();
         expect(spiedJobSetStateToFailure).toHaveBeenCalledTimes(1);
-        expect(spiedJobSetStateToFailure.mock.calls[0][0].message).toBe("shutdown timeout")
+        expect((spiedJobSetStateToFailure.mock.calls[0][0] as Error).message).toBe("shutdown timeout")
     });
 });
 
@@ -195,7 +195,7 @@ test("processor failed", async () => {
 
     expect(spiedJobSetStateToComplete).not.toHaveBeenCalled();
     expect(spiedJobSetStateToFailure).toHaveBeenCalledTimes(1);
-    expect(spiedJobSetStateToFailure.mock.calls[0][0].message).toBe("Some Error");
+    expect((spiedJobSetStateToFailure.mock.calls[0][0] as Error).message).toBe("Some Error");
 });
 
 test("processing job is deleted", async () => {
