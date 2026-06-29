@@ -38,23 +38,23 @@
   "dependencies": {
     "async-sema": "^3.1.1",
     "next-tick": "^1.1.0",
-    "uuid": "8.x"
+    "uuid": "~8.3.2"
   },
   "devDependencies": {
-    "@types/jest": "27.x",
-    "@types/nedb": "1.8.x",
+    "@types/jest": "~27.5.2",
+    "@types/nedb": "1.8.16",
     "@types/next-tick": "^1.0.2",
-    "@types/node": "*",
-    "@types/uuid": "8.x",
-    "@typescript-eslint/eslint-plugin": "5.x",
-    "@typescript-eslint/parser": "5.x",
-    "eslint": "8.x",
-    "eslint-plugin-jest": "25.x",
-    "jest": "27.x",
-    "jest-mock-extended": "2.x",
+    "@types/node": "^22.20.0",
+    "@types/uuid": "~8.3.4",
+    "@typescript-eslint/eslint-plugin": "~5.62.0",
+    "@typescript-eslint/parser": "~5.62.0",
+    "eslint": "~8.57.1",
+    "eslint-plugin-jest": "~25.7.0",
+    "jest": "~27.5.1",
+    "jest-mock-extended": "~2.0.9",
     "nedb": "^1.8.0",
-    "ts-jest": "27.x",
-    "typescript": "^5.7.2"
+    "ts-jest": "~27.1.5",
+    "typescript": "^5.9.3"
   },
   "repository": {
     "type": "git",
