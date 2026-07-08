@@ -6,6 +6,24 @@ import { DBJob, IJobRepository } from "./types.js";
 
 export type DbOptions = DataStoreOptions;
 
+function dedupeStateRank(state: StateType | undefined): number {
+    return state === State.INACTIVE || state === State.ACTIVE ? 0 : 1;
+}
+
+function compareDedupeCandidates(a: DBJob, b: DBJob): number {
+    const rankDiff = dedupeStateRank(a.state) - dedupeStateRank(b.state);
+    if (rankDiff !== 0) {
+        return rankDiff;
+    }
+
+    const updatedDiff = b.updatedAt.getTime() - a.updatedAt.getTime();
+    if (updatedDiff !== 0) {
+        return updatedDiff;
+    }
+
+    return b.createdAt.getTime() - a.createdAt.getTime();
+}
+
 export class NedbJobRepository implements IJobRepository {
     protected readonly db: DataStore;
 
@@ -58,13 +76,13 @@ export class NedbJobRepository implements IJobRepository {
 
     public findJobByTypeAndDedupeKey(type: string, dedupeKey: string): Promise<DBJob | null> {
         return new Promise<DBJob | null>((resolve, reject) => {
-            this.db.findOne({ type, dedupeKey }, (error, doc: DBJob | null) => {
+            this.db.find({ type, dedupeKey }, (error: Error | null, docs: DBJob[]) => {
                 if (error !== null) {
                     reject(error);
                     return;
                 }
 
-                resolve(doc);
+                resolve(docs.sort(compareDedupeCandidates)[0] ?? null);
             });
         });
     }

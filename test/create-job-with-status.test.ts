@@ -31,3 +31,37 @@ test("createJobWithStatus returns an existing job for the same dedupe key", asyn
     expect(jobs).toHaveLength(1);
     expect(jobs[0]?.state).toBe(State.INACTIVE);
 });
+
+test("createJobWithStatus prefers an active job over older completed jobs with the same dedupe key", async () => {
+    const queue = await Queue.createQueue(
+        new InMemoryJobRepository({
+            inMemoryOnly: true,
+        })
+    );
+
+    const first = await queue.createJobWithStatus({
+        type: "type",
+        data: { seq: 1 },
+        dedupeKey: "type:hello",
+    });
+    await first.job.setStateToActive();
+    await first.job.setStateToComplete();
+
+    const second = await queue.createJobWithStatus({
+        type: "type",
+        data: { seq: 2 },
+        dedupeKey: "type:hello",
+    });
+    expect(second.created).toBe(true);
+    await second.job.setStateToActive();
+
+    const third = await queue.createJobWithStatus({
+        type: "type",
+        data: { seq: 3 },
+        dedupeKey: "type:hello",
+    });
+
+    expect(third.created).toBe(false);
+    expect(third.job.id).toBe(second.job.id);
+    expect(third.job.state).toBe(State.ACTIVE);
+});

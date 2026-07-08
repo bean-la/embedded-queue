@@ -244,6 +244,54 @@ describe("listJobs", () => {
     });
 });
 
+describe("findJobByTypeAndDedupeKey", () => {
+    test("prefers active or inactive jobs over older completed jobs", async () => {
+        const repository = new JobRepository({
+            inMemoryOnly: true,
+        });
+        await repository.init();
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const db: DataStore = (repository as any).db;
+        const dedupeKey = "type:hello";
+
+        await dbInsert(
+            db,
+            {
+                _id: "complete-1",
+                type: "type",
+                dedupeKey,
+                priority: Priority.NORMAL,
+                createdAt: new Date(2020, 4, 1, 0, 0, 0),
+                updatedAt: new Date(2020, 4, 1, 0, 5, 0),
+                completedAt: new Date(2020, 4, 1, 0, 5, 0),
+                state: State.COMPLETE,
+                logs: [],
+            }
+        );
+
+        await dbInsert(
+            db,
+            {
+                _id: "active-1",
+                type: "type",
+                dedupeKey,
+                priority: Priority.NORMAL,
+                createdAt: new Date(2020, 4, 1, 0, 10, 0),
+                updatedAt: new Date(2020, 4, 1, 0, 11, 0),
+                startedAt: new Date(2020, 4, 1, 0, 11, 0),
+                state: State.ACTIVE,
+                logs: [],
+            }
+        );
+
+        const job = await repository.findJobByTypeAndDedupeKey("type", dedupeKey);
+
+        expect(job?._id).toBe("active-1");
+        expect(job?.state).toBe(State.ACTIVE);
+    });
+});
+
 describe("findJob", () => {
     const repository = new JobRepository({
         inMemoryOnly: true,

@@ -3,6 +3,24 @@ import { Job } from "./job.js";
 import { State, type StateType } from "./state.js";
 import { DBJob, IJobRepository } from "./types.js";
 
+function dedupeStateRank(state: StateType | undefined): number {
+    return state === State.INACTIVE || state === State.ACTIVE ? 0 : 1;
+}
+
+function compareDedupeCandidates(a: DBJob, b: DBJob): number {
+    const rankDiff = dedupeStateRank(a.state) - dedupeStateRank(b.state);
+    if (rankDiff !== 0) {
+        return rankDiff;
+    }
+
+    const updatedDiff = b.updatedAt.getTime() - a.updatedAt.getTime();
+    if (updatedDiff !== 0) {
+        return updatedDiff;
+    }
+
+    return b.createdAt.getTime() - a.createdAt.getTime();
+}
+
 export class InMemoryJobRepository implements IJobRepository {
     private jobs = new Map<string, DBJob>();
 
@@ -37,8 +55,9 @@ export class InMemoryJobRepository implements IJobRepository {
 
     findJobByTypeAndDedupeKey(type: string, dedupeKey: string): Promise<DBJob | null> {
         return new Promise<DBJob | null>((resolve, _reject) => {
-            const jobs = Array.from(this.jobs.values());
-            const job = jobs.find((job) => job.type === type && job.dedupeKey === dedupeKey);
+            const job = Array.from(this.jobs.values())
+                .filter((candidate) => candidate.type === type && candidate.dedupeKey === dedupeKey)
+                .sort(compareDedupeCandidates)[0];
             resolve(job || null);
         });
     }
